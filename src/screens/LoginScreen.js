@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useState, useReducer } from "react";
 import {
   View,
   Text,
@@ -21,40 +21,32 @@ import ShowPasswordButton from "../components/ShowPasswordButton";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const RegistationScreen = ({ updateRegistered }) => {
+const LoginScreen = ({ updateRegistered }) => {
   const [form, setForm] = useReducer(
     (state, action) => {
       return { ...state, [action.type]: action.payload };
     },
     {
-      login: "",
       email: "",
       password: "",
     }
   );
 
   const [errors, setErrors] = useState({
-    login: "",
     email: "",
     password: "",
   });
 
   const errorsMessages = {
-    login: "Введіть логін",
     email: "Введіть адресу електронної пошти",
     password: "Введіть пароль",
   };
 
   const validateForm = () => {
     const currentErrors = {
-      login: "",
       email: "",
       password: "",
     };
-
-    if (form.login === "") {
-      currentErrors.login = errorsMessages.login;
-    }
 
     if (form.email === "") {
       currentErrors.email = errorsMessages.email;
@@ -75,10 +67,6 @@ const RegistationScreen = ({ updateRegistered }) => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
-  const handleLoginChange = (value) => {
-    setForm({ type: "login", payload: value });
-  };
-
   const handleEmailChange = (value) => {
     setForm({ type: "email", payload: value });
   };
@@ -92,15 +80,15 @@ const RegistationScreen = ({ updateRegistered }) => {
   };
 
   const onLogin = async () => {
-    updateRegistered(true);
-  };
-
-  const onRegister = () => {
     if (!validateForm()) {
       return;
     }
-    console.log("register");
+    console.log("login");
     console.log(form);
+  };
+
+  const onSignUp = () => {
+    updateRegistered(false);
   };
 
   return (
@@ -115,17 +103,9 @@ const RegistationScreen = ({ updateRegistered }) => {
           style={styles.container}
         >
           <View style={styles.formContainer}>
-            <Text style={styles.title}>Реєстрація</Text>
+            <Text style={styles.title}>Увійти</Text>
 
             <View style={[styles.innerContainer, styles.inputContainer]}>
-              <Input
-                value={form.login}
-                autofocus={true}
-                placeholder="Логін"
-                errorMessage={errors.login}
-                onTextChange={handleLoginChange}
-              />
-
               <Input
                 value={form.email}
                 autofocus={true}
@@ -145,20 +125,17 @@ const RegistationScreen = ({ updateRegistered }) => {
             </View>
 
             <View style={[styles.innerContainer, styles.buttonContainer]}>
-              <Button onPress={onRegister}>
+              <Button onPress={onLogin}>
                 <Text style={[styles.baseText, styles.loginButtonText]}>
-                  Зареєструватися
+                  Увійти
                 </Text>
               </Button>
 
               <View style={styles.signUpContainer}>
                 <Text style={[styles.baseText, styles.registerButtonText]}>
-                  Вже є аккаунт?&nbsp;
-                  <TouchableWithoutFeedback
-                    style={{ paddingHorizontal: 8 }}
-                    onPress={onLogin}
-                  >
-                    <Text style={styles.signUpText}>Увійти</Text>
+                  Немає аккаунту?&nbsp;
+                  <TouchableWithoutFeedback onPress={onSignUp}>
+                    <Text style={styles.signUpText}>Зареєструватися</Text>
                   </TouchableWithoutFeedback>
                 </Text>
               </View>
@@ -170,7 +147,7 @@ const RegistationScreen = ({ updateRegistered }) => {
   );
 };
 
-export default RegistationScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, Text, View } from "react-native";
 
 import { colors } from "../../styles/global";
 
@@ -7,7 +7,7 @@ const Input = ({
   value,
   onTextChange,
   placeholder,
-  outerStyles,
+  errorMessage,
   rightButton,
   autofocus = false,
   secureTextEntry = false,
@@ -28,27 +28,42 @@ const Input = ({
   };
 
   return (
-    <View style={[styles.input, isFocused && styles.focused, outerStyles]}>
-      <TextInput
-        value={value}
-        autoFocus={autofocus}
-        onChangeText={onTextChange}
-        placeholder={placeholder}
-        secureTextEntry={secureTextEntry}
-        style={styles.baseText}
-        autoCapitalize="none"
-        onFocus={onFocus}
-        onBlur={onBlur}
-      />
+    <View style={styles.container}>
+      <View style={[styles.input, isFocused && styles.focused]}>
+        <TextInput
+          value={value}
+          autoFocus={autofocus}
+          onChangeText={onTextChange}
+          placeholder={placeholder}
+          secureTextEntry={secureTextEntry}
+          style={styles.baseText}
+          autoCapitalize="none"
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
 
-      {rightButton}
+        {rightButton}
+      </View>
+
+      {errorMessage && (
+        <View style={{ marginLeft: 16 }}>
+          <Text style={{ color: colors.red }}>{errorMessage}</Text>
+        </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    gap: 4,
+  },
   input: {
-    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+    paddingHorizontal: 16,
     height: 50,
     borderRadius: 16,
     borderWidth: 1,
@@ -56,9 +71,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light_gray,
   },
   baseText: {
+    height: 50,
     fontWeight: "400",
     fontSize: 16,
-    lineHeight: 18,
     color: colors.black_primary,
   },
   focused: {
