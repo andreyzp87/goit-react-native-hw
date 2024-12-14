@@ -18,10 +18,13 @@ import { colors } from "../../styles/global";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import ShowPasswordButton from "../components/ShowPasswordButton";
+import { useAuth } from "../context/AuthContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const LoginScreen = ({ updateRegistered }) => {
+const LoginScreen = ({ navigation }) => {
+  const { login } = useAuth();
+
   const [form, setForm] = useReducer(
     (state, action) => {
       return { ...state, [action.type]: action.payload };
@@ -83,12 +86,15 @@ const LoginScreen = ({ updateRegistered }) => {
     if (!validateForm()) {
       return;
     }
-    console.log("login");
-    console.log(form);
+    login({
+      id: 1,
+      email: form.email,
+      password: form.password,
+    });
   };
 
   const onSignUp = () => {
-    updateRegistered(false);
+    navigation.navigate("Registration");
   };
 
   return (
