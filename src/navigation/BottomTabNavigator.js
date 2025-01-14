@@ -3,10 +3,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { colors } from "../../styles/global";
 import LogoutButton from "../components/LogoutButton";
 import BottomTabButton from "../components/BottomTabButton";
-import PostsScreen from "../screens/PostsScreen";
-import CreatePostsScreen from "../screens/CreatePostsScreen";
+import CreatePostScreen from "../screens/CreatePostScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import { useAuth } from "../context/AuthContext";
+import BackButton from "../components/BackButton";
+import PostsNavigator from "./PostsNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,18 +16,17 @@ const BottomTabNavigator = ({ navigation, route }) => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Posts"
+      initialRouteName="PostsNav"
       screenOptions={({ navigation }) => ({
         tabBarLabel: "",
         tabBarItemStyle: styles.tabBarItemStyle,
       })}
     >
       <Tab.Screen
-        name="Posts"
-        component={PostsScreen}
+        name="PostsNav"
+        component={PostsNavigator}
         options={({ navigation }) => ({
-          title: "Posts",
-          headerRight: () => <LogoutButton onPress={() => logout()} />,
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <BottomTabButton icon="grid-outline" isFocused={focused} />
           ),
@@ -35,9 +35,10 @@ const BottomTabNavigator = ({ navigation, route }) => {
 
       <Tab.Screen
         name="CreatePost"
-        component={CreatePostsScreen}
+        component={CreatePostScreen}
         options={({ navigation }) => ({
-          title: "Create post",
+          title: "Створити Публікацію",
+          headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
           tabBarIcon: ({ focused }) => (
             <BottomTabButton icon="add-outline" isFocused={focused} />
           ),
@@ -48,7 +49,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
         name="Profile"
         component={ProfileScreen}
         options={({ navigation }) => ({
-          title: "Profile",
+          title: "Профіль",
           tabBarIcon: ({ focused }) => (
             <BottomTabButton icon="person" isFocused={focused} />
           ),

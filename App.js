@@ -5,6 +5,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigation/StackNavigator";
 import { AuthProvider } from "./src/context/AuthContext";
+import { PostsProvider } from "./src/context/PostsContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -24,9 +25,11 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <StackNavigator />
-      </NavigationContainer>
+      <PostsProvider>
+        <NavigationContainer>
+          <StackNavigator />
+        </NavigationContainer>
+      </PostsProvider>
     </AuthProvider>
   );
 }
