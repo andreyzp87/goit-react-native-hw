@@ -12,18 +12,19 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../styles/global";
-import { usePosts } from "../context/PostsContext";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost } from "../utils/firestore";
+import { createPost } from "../utils/posts";
 
 const CreatePostScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [facing, setFacing] = useState("back");
   const [photo, setPhoto] = useState(null);
   const [photoName, setPhotoName] = useState("");
   const [location, setLocation] = useState("");
-  const { createPost } = usePosts();
-  const { user } = useAuth();
+  const user = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
     (async () => {
@@ -51,7 +52,6 @@ const CreatePostScreen = ({ navigation }) => {
         const photo = await cameraRef.takePictureAsync();
         setPhoto(photo.uri);
 
-        // Save to media library
         await MediaLibrary.saveToLibraryAsync(photo.uri);
       } catch (error) {
         console.log("Error taking photo:", error);
@@ -84,12 +84,15 @@ const CreatePostScreen = ({ navigation }) => {
       location: location,
       coordinates: coordinates,
       timestamp: new Date().toISOString(),
-      userId: user.id,
+      userId: user.uid,
     };
 
-    createPost(post);
-
-    navigation.navigate("PostsNav");
+    try {
+      await createPost(post, dispatch);
+      navigation.navigate("PostsNav");
+    } catch (error) {
+      console.log("Error creating post:", error);
+    }
   };
 
   if (hasPermission === null) {

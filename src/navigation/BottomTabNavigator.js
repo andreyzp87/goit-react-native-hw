@@ -1,19 +1,15 @@
 import { StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { colors } from "../../styles/global";
-import LogoutButton from "../components/LogoutButton";
 import BottomTabButton from "../components/BottomTabButton";
 import CreatePostScreen from "../screens/CreatePostScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import { useAuth } from "../context/AuthContext";
 import BackButton from "../components/BackButton";
 import PostsNavigator from "./PostsNavigator";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = ({ navigation, route }) => {
-  const { logout } = useAuth();
-
   return (
     <Tab.Navigator
       initialRouteName="PostsNav"

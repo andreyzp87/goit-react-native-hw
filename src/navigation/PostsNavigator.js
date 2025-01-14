@@ -5,12 +5,17 @@ import LogoutButton from "../components/LogoutButton";
 import PostsScreen from "../screens/PostsScreen";
 import MapScreen from "../screens/MapScreen";
 import CommentsScreen from "../screens/CommentsScreen";
-import { useAuth } from "../context/AuthContext";
+import { logoutDB } from "../utils/auth";
+import { useDispatch } from "react-redux";
 
 const Stack = createStackNavigator();
 
-const PostsNavigator = () => {
-  const { logout } = useAuth();
+const PostsNavigator = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    logoutDB(dispatch);
+  };
 
   return (
     <Stack.Navigator initialRouteName="Posts">

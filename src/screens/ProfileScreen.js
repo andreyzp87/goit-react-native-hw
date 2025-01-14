@@ -3,10 +3,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { colors } from "../../styles/global";
 import Input from "../components/Input";
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
+import { updateUserProfile } from "../utils/auth";
 
 const ProfileScreen = () => {
-  const { user, updateUser } = useAuth();
+  const user = useSelector((state) => state.user.userInfo);
+
   const [userName, setUserName] = useState("");
 
   const handleImageUpload = async (userId, file, fileName) => {};
@@ -14,9 +16,9 @@ const ProfileScreen = () => {
   const pickImage = async () => {};
 
   const onUserNameChange = async () => {
-    await updateUser({
+    await updateUserProfile({
       ...user,
-      name: userName,
+      displayName: userName,
     });
   };
 
@@ -28,7 +30,7 @@ const ProfileScreen = () => {
     <View style={styles.section}>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>Name:</Text>
-        <Text>{user.name}</Text>
+        <Text>{user.displayName}</Text>
       </View>
 
       <Input

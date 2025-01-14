@@ -2,12 +2,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/LoginScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
 
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.user.userInfo);
 
   return (
     <Stack.Navigator

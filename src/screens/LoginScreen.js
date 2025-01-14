@@ -11,6 +11,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 
 import { colors } from "../../styles/global";
@@ -18,13 +19,13 @@ import { colors } from "../../styles/global";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import ShowPasswordButton from "../components/ShowPasswordButton";
-import { useAuth } from "../context/AuthContext";
+import { loginDB } from "../utils/auth";
+import { useDispatch } from "react-redux";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const LoginScreen = ({ navigation }) => {
-  const { login } = useAuth();
-
+  const dispatch = useDispatch();
   const [form, setForm] = useReducer(
     (state, action) => {
       return { ...state, [action.type]: action.payload };
@@ -84,17 +85,22 @@ const LoginScreen = ({ navigation }) => {
 
   const onLogin = async () => {
     if (!validateForm()) {
+      console.log("errors");
       return;
     }
-    login({
-      id: 1,
-      email: form.email,
-      password: form.password,
-    });
+
+    try {
+      await loginDB({ email: form.email, password: form.password }, dispatch);
+    } catch (error) {
+      Alert.alert(error.message);
+    }
   };
 
   const onSignUp = () => {
-    navigation.navigate("Registration");
+    navigation.navigate("Registration", {
+      email: form.email,
+      password: form.password,
+    });
   };
 
   return (

@@ -18,45 +18,45 @@ import { colors } from "../../styles/global";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import ShowPasswordButton from "../components/ShowPasswordButton";
-import { useAuth } from "../context/AuthContext";
+import { loginDB, registerDB } from "../utils/auth";
+import { useDispatch } from "react-redux";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const RegistationScreen = ({ navigation }) => {
-  const { login } = useAuth();
-
+  const dispatch = useDispatch();
   const [form, setForm] = useReducer(
     (state, action) => {
       return { ...state, [action.type]: action.payload };
     },
     {
-      login: "",
+      name: "",
       email: "",
       password: "",
     }
   );
 
   const [errors, setErrors] = useState({
-    login: "",
+    name: "",
     email: "",
     password: "",
   });
 
   const errorsMessages = {
-    login: "Введіть логін",
+    name: "Введіть ім'я",
     email: "Введіть адресу електронної пошти",
     password: "Введіть пароль",
   };
 
   const validateForm = () => {
     const currentErrors = {
-      login: "",
+      name: "",
       email: "",
       password: "",
     };
 
-    if (form.login === "") {
-      currentErrors.login = errorsMessages.login;
+    if (form.name === "") {
+      currentErrors.name = errorsMessages.name;
     }
 
     if (form.email === "") {
@@ -78,8 +78,8 @@ const RegistationScreen = ({ navigation }) => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
-  const handleLoginChange = (value) => {
-    setForm({ type: "login", payload: value });
+  const handleNameChange = (value) => {
+    setForm({ type: "name", payload: value });
   };
 
   const handleEmailChange = (value) => {
@@ -103,12 +103,18 @@ const RegistationScreen = ({ navigation }) => {
       return;
     }
 
-    login({
-      id: 1,
-      name: form.login,
-      email: form.email,
-      password: form.password,
-    });
+    try {
+      registerDB({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+
+      loginDB({ email: form.email, password: form.password }, dispatch);
+    } catch (err) {
+      Alert.alert(err.message);
+      console.error("Register error:", err);
+    }
   };
 
   return (
@@ -127,11 +133,11 @@ const RegistationScreen = ({ navigation }) => {
 
             <View style={[styles.innerContainer, styles.inputContainer]}>
               <Input
-                value={form.login}
+                value={form.name}
                 autofocus={true}
-                placeholder="Логін"
-                errorMessage={errors.login}
-                onTextChange={handleLoginChange}
+                placeholder="Ім'я"
+                errorMessage={errors.name}
+                onTextChange={handleNameChange}
               />
 
               <Input

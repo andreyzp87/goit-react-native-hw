@@ -4,8 +4,11 @@ import { ActivityIndicator } from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigation/StackNavigator";
-import { AuthProvider } from "./src/context/AuthContext";
-import { PostsProvider } from "./src/context/PostsContext";
+import store from "./src/redux/store/store";
+import { Provider, useDispatch } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { authStateChanged } from "./src/utils/auth";
+import { useEffect } from "react";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -24,15 +27,30 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <PostsProvider>
-        <NavigationContainer>
-          <StackNavigator />
-        </NavigationContainer>
-      </PostsProvider>
-    </AuthProvider>
+    <Provider store={store.store}>
+      <PersistGate
+        loading={<Text>Loading...</Text>}
+        persistor={store.persistor}
+      >
+        <AuthListener />
+      </PersistGate>
+    </Provider>
   );
 }
+
+const AuthListener = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    authStateChanged(dispatch);
+  }, [dispatch]);
+
+  return (
+    <NavigationContainer>
+      <StackNavigator />
+    </NavigationContainer>
+  );
+};
 
 const styles = StyleSheet.create({
   section: {

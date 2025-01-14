@@ -19,14 +19,12 @@ const PostItem = ({ navigation, post }) => {
             onPress={() => navigation.navigate("Comments", { post })}
           >
             <Ionicons name="chatbubble-outline" size={24} color="#BDBDBD" />
-            <Text style={styles.statsText}>0</Text>
+            <Text style={styles.statsText}>{post.comments.length}</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.locationButton}
-          onPress={() =>
-            navigation.navigate("Map", { post })
-          }
+          onPress={() => navigation.navigate("Map", { post })}
         >
           <Ionicons name="location-outline" size={24} color="#BDBDBD" />
           <Text style={styles.locationText}>{post.location}</Text>
